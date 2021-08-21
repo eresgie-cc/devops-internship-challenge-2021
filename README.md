@@ -1,3 +1,8 @@
+
+## High-level overview of infrastructure
+![aws-infrastructure](intership.png)
+
+
 # DevOps Internship Challenge 2021
 
 Build and deploy application from **app** folder. Use whatever service or platform you want (AWS, Azure, GCP, bare metal and so on). Most of them have free tier option.
