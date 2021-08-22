@@ -18,7 +18,7 @@ resource "aws_instance" "nat" {
   source_dest_check           = false
 
   tags = {
-    Name = "NAT"
+    Name = "nat"
   }
 
   depends_on = [aws_security_group.nat]
@@ -56,7 +56,7 @@ resource "aws_instance" "bastion" {
   key_name                    = var.bastion_key_name
 
   tags = {
-    Name = "Bastion"
+    Name = "bastion"
   }
 
   depends_on = [aws_security_group.bastion]
