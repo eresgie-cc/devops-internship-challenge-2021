@@ -21,6 +21,12 @@ variable "private_cidr" {
   default = ["10.10.10.0/24", "10.10.20.0/24", "10.10.30.0/24"]
 }
 
+variable "av_zones" {
+  description = "avaibility zones"
+  type        = list(string)
+  default     = ["eu-central-1a", "eu-central-1b", "eu-central-1c"]
+}
+
 // bastion
 variable "bastion_ip" {
   type    = string
