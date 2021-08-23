@@ -62,6 +62,7 @@ resource "aws_route_table" "public" {
 }
 
 resource "aws_route_table_association" "a_public" {
-  subnet_id      = aws_subnet.public.id
+  for_each       = toset(var.public_cidr)
+  subnet_id      = aws_subnet.public[each.key].id
   route_table_id = aws_route_table.public.id
 }

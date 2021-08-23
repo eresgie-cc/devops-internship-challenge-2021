@@ -1,3 +1,41 @@
+resource "aws_security_group" "alb" {
+  name        = "alb"
+  description = "Allow HTTP inbound from internet"
+  vpc_id      = aws_vpc.internship.id
+
+  ingress = [
+    {
+      cidr_blocks      = ["0.0.0.0/0"]
+      description      = "Any"
+      from_port        = 80
+      ipv6_cidr_blocks = null
+      prefix_list_ids  = null
+      protocol         = "tcp"
+      security_groups  = null
+      self             = false
+      to_port          = 80
+    }
+  ]
+
+  egress = [
+    {
+      cidr_blocks      = ["0.0.0.0/0"]
+      description      = "All"
+      from_port        = 0
+      ipv6_cidr_blocks = null
+      prefix_list_ids  = null
+      protocol         = "-1"
+      security_groups  = null
+      self             = false
+      to_port          = 0
+    }
+  ]
+
+  tags = {
+    Name = "nat"
+  }
+}
+
 resource "aws_security_group" "private" {
   name        = "private"
   description = "Allow between private subnets and to Bastionb/NAT/LB instances"
@@ -5,7 +43,7 @@ resource "aws_security_group" "private" {
 
   ingress = [
     {
-      cidr_blocks      = [var.public_cidr]
+      cidr_blocks      = var.public_cidr
       description      = "HTTP from public"
       from_port        = 80
       ipv6_cidr_blocks = null

@@ -11,8 +11,8 @@ variable "vpc_cidr" {
 
 // public
 variable "public_cidr" {
-  type    = string
-  default = "10.10.1.0/24"
+  type    = list(string)
+  default = ["10.10.1.0/24", "10.10.2.0/24", "10.10.3.0/24"]
 }
 
 // private
@@ -39,5 +39,5 @@ variable "bastion_key_name" {
 
 variable "ip_to_bastion" {
   type    = string
-  default = "161.35.212.75"
+  default = ""
 }

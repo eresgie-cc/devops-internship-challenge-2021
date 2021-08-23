@@ -1,3 +1,8 @@
+locals {
+  public_subnets_ids = tolist([
+    for subnet in aws_subnet.public : subnet.id
+  ])
+}
 // NAT
 data "aws_ami" "nat_ami" {
   most_recent = true
@@ -12,7 +17,7 @@ data "aws_ami" "nat_ami" {
 resource "aws_instance" "nat" {
   ami                         = data.aws_ami.nat_ami.id
   instance_type               = "t3.nano"
-  subnet_id                   = aws_subnet.public.id
+  subnet_id                   = local.public_subnets_ids[0]
   security_groups             = [aws_security_group.nat.id]
   associate_public_ip_address = true
   source_dest_check           = false
@@ -49,7 +54,7 @@ data "aws_ami" "ubuntu" {
 resource "aws_instance" "bastion" {
   ami                         = data.aws_ami.ubuntu.id
   instance_type               = "t2.nano"
-  subnet_id                   = aws_subnet.public.id
+  subnet_id                   = local.public_subnets_ids[0]
   security_groups             = [aws_security_group.bastion.id]
   associate_public_ip_address = true
   private_ip                  = var.bastion_ip
