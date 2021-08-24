@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    run: intership
+  name: intership-deploy-main
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      run: intership-main
+  template:
+    metadata:
+      labels:
+        run: intership-main
+    spec:
+      containers:
+        - image: ghcr.io/mich4n/intership
+          name: intership
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 5001
+            initialDelaySeconds: 5
+            timeoutSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: 5001
+            initialDelaySeconds: 5
+            timeoutSeconds: 5
