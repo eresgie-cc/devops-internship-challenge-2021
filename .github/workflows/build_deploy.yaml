@@ -2,11 +2,11 @@ name: Build image and deploy to cluster
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - master
-    paths:
-      - "app/**"
+  # push:          # In real-case I would enable this
+  #   branches:    # but for showcase purpose its better
+  #     - master   # to only allow workflow_dispatch
+  #   paths:
+  #     - "app/**"
 
 jobs:
   release:
