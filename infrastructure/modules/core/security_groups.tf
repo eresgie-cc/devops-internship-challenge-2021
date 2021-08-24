@@ -65,6 +65,17 @@ resource "aws_security_group" "private" {
       to_port          = 22
     },
     {
+      cidr_blocks      = ["${var.bastion_ip}/32"]
+      description      = "Kubectl from bastion"
+      from_port        = 16443
+      ipv6_cidr_blocks = null
+      prefix_list_ids  = null
+      protocol         = "tcp"
+      security_groups  = null
+      self             = false
+      to_port          = 16443
+    },
+    {
       cidr_blocks      = var.private_cidr
       description      = "CIDRs for private subnets"
       from_port        = 0

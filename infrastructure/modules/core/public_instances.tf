@@ -60,6 +60,19 @@ resource "aws_instance" "bastion" {
   private_ip                  = var.bastion_ip
   key_name                    = var.bastion_key_name
 
+  user_data = <<-EOF
+              #!/bin/bash
+              sleep 300
+              # Install kubectl
+              # Only need to manually get config for connection
+              sudo apt-get update
+              sudo apt-get install -y apt-transport-https ca-certificates curl
+              sudo curl -fsSLo /usr/share/keyrings/kubernetes-archive-keyring.gpg https://packages.cloud.google.com/apt/doc/apt-key.gpg
+              echo "deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee /etc/apt/sources.list.d/kubernetes.list
+              sudo apt-get update
+              sudo apt-get install -y kubectl
+	          EOF
+
   tags = {
     Name = "bastion"
   }
