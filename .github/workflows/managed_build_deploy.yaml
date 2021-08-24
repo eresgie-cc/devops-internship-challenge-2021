@@ -1,0 +1,39 @@
+name: Build image and deploy to ECS
+
+on:
+  workflow_dispatch:
+  # push:          # In real-case I would enable this
+  #   branches:    # but for showcase purpose its better
+  #     - master   # to only allow workflow_dispatch
+  #   paths:
+  #     - "app/**"
+
+jobs:
+  release:
+    env:
+      IMAGE: ghcr.io/mich4n/internship
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Log in to the Container registry
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.TOKEN }}
+
+      - name: Generate build ID
+        id: prep
+        run: |
+          sha=${GITHUB_SHA::8}
+          ts=$(date +%s)
+          echo "::set-output name=BUILD_ID::${sha}-${ts}"
+
+      - name: Build and push
+        uses: docker/build-push-action@v2
+        with:
+          context: app
+          platforms: linux/amd64
+          push: true
+          tags: ${{ env.IMAGE }}:ecs-${{ steps.prep.outputs.BUILD_ID }}
