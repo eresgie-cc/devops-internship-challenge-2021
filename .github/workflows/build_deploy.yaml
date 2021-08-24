@@ -65,6 +65,6 @@ jobs:
 
       - name: Deploy to cluster
         run: |
-            cd app/.kubernetes
-            scp artifact.yaml bastion:~/artifact.yaml
-            ssh bastion -t -- "kubectl apply -f ~/artifact.yaml"
+          cd app/.kubernetes
+          scp artifact.yaml bastion:~/artifact.yaml
+          ssh bastion -t -- "kubectl apply -f ~/artifact.yaml"
