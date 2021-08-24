@@ -1,4 +1,4 @@
-name: Build image
+name: Build image and deploy to cluster
 
 on:
   workflow_dispatch:
@@ -29,6 +29,7 @@ jobs:
           sha=${GITHUB_SHA::8}
           ts=$(date +%s)
           echo "::set-output name=BUILD_ID::${sha}-${ts}"
+
       - name: Build and push
         uses: docker/build-push-action@v2
         with:
@@ -36,3 +37,34 @@ jobs:
           platforms: linux/amd64
           push: true
           tags: ${{ env.IMAGE }}:${{ steps.prep.outputs.BUILD_ID }}
+
+      - name: Configure SSH
+        run: |
+          mkdir -p ~/.ssh/
+          echo "$SSH_KEY" > ~/.ssh/bastion.key
+          chmod 600 ~/.ssh/bastion.key
+          cat >>~/.ssh/config <<END
+          Host bastion
+            HostName $SSH_HOST
+            User $SSH_USER
+            IdentityFile ~/.ssh/bastion.key
+            StrictHostKeyChecking no
+          END
+        env:
+          SSH_USER: ${{ secrets.SSH_USER }}
+          SSH_KEY: ${{ secrets.SSH_KEY }}
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+
+      - name: Set up Kustomize
+        run: |
+          cd app/.kubernetes
+          curl -sfLo kustomize https://github.com/kubernetes-sigs/kustomize/releases/download/v3.1.0/kustomize_3.1.0_linux_amd64
+          chmod u+x ./kustomize
+          ./kustomize edit set image ${{ env.IMAGE }}=${{ env.IMAGE }}:${{ steps.prep.outputs.BUILD_ID }}
+          ./kustomize build . > artifact.yaml
+
+      - name: Deploy to cluster
+        run: /
+            cd app/.kubernetes
+            scp artifact.yaml bastion:~/artifact.yaml
+            ssh bastion -t -- "kubectl apply -f ~/artifact.yaml"
