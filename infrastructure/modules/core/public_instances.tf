@@ -65,5 +65,4 @@ resource "aws_instance" "bastion" {
   }
 
   depends_on = [aws_security_group.bastion]
-
 }
