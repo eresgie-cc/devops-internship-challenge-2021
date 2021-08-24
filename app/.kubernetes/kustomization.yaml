@@ -1,0 +1,12 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - deployment.yaml
+  - svc.yaml
+  - ingress.yaml
+
+images:
+  - name: ghcr.io/mich4n/intership
+    newName: ghcr.io/mich4n/intership
+    newTag: 03e16988-1629553305
